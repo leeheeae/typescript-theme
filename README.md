@@ -59,3 +59,39 @@ interface ContainerProps {
 - false로 변경하고 싶을 경우 `borderColor?: string` 형식으로 작성 (Optional)
 - styled-components는 props는 필수일 경우 기본값을 설정해줘야함
   - <Container bgColor={bgColor} borderColor={borderColor ?? bgColor}/>
+
+### useState Hook type 설정하기
+
+- state에 type을 설정하지 않더도 typescript에서 기본적으로 초기값을 기준으로 type을 설정해줌
+- 만약 두가지의 타입이 가능할 경우 아래와 같이 표시
+
+```typescript
+const [value, setValue] = useState<number | string>(1);
+setValue(2);
+setValue('hello');
+setValue(true); //error
+```
+
+#### 이벤트 함수를 type 설정
+
+- props가 기본적으로 any로 설정되지만 type을 정확하게 알려주는 것이 좋음
+- React에서 일어나는 이벤트를 type을 통해 알려줘야함
+  - `const onChange = (event: React.FormEvent) => {}`
+- 이벤트 type 설정 후 어떤 종류의 Element가 이벤트를 발생시킬지 특정 시켜줘야함
+  - `const onChagne = (event: React.FormEvent<HTMLInputElement>) => {}`
+- event의 대상을 찾을 때 React Typescript는 기본적으로 currentTarget을 사용
+
+```typescript
+//예시
+const onchange = (event: React.FormEvent<HTMLInputElement>) => {
+  const {
+    currentTarget: { value },
+  } = event;
+  setValue(value);
+};
+
+const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  console.log('hello', value);
+};
+```
