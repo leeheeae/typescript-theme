@@ -1,46 +1,61 @@
-# Getting Started with Create React App
+# typescript로 theme 설정하기
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Typescript 설치하기
 
-## Available Scripts
+1. 처음 시작할 때 설정
 
-In the project directory, you can run:
+- `npx create-react-app my-app --template typescript`
 
-### `npm start`
+2. 기존의 프로젝트에서 추가하기
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- `npm i --save typescript @types/node @types/react @types/react-dom @types/jest`
+- js 파일을 tsx 파일로 변경
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## styled-components typescript 설정하기
 
-### `npm test`
+### 설치하기
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- `npm i styled-components`
+- `npm i -save-dev @type/styled-components`
 
-### `npm run build`
+### TypeScript와 propTypes의 차이점
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- typescript는 코드가 발생하기 전에 오류를 확인 가능
+- propTypes는 코드가 발생한 후 콘솔에서 확인 가능
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### interface를 이용하여 type 설정
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**interface란?**
+Object 형태의 type을 설정하여 props에 전달하는 방식
 
-### `npm run eject`
+#### 설정한 interface 전달하기
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1.  기본 props type에서 전달하기
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```typescript
+interface CircleProps {
+  //props의 type 설정
+  bgColor: string;
+}
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+function Circle(props: CircleProps) {
+  return <Container />;
+}
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+2. styled-components에서 props type 전달하기
 
-## Learn More
+```typescript
+const Container = styled.div<ContainerProps>``;
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+interface ContainerProps {
+  bgColor: string;
+}
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### required 형식 변경하기
+
+- interface는 기본적으로 required가 true로 설정되어 있음
+- false로 변경하고 싶을 경우 `borderColor?: string` 형식으로 작성 (Optional)
+- styled-components는 props는 필수일 경우 기본값을 설정해줘야함
+  - <Container bgColor={bgColor} borderColor={borderColor ?? bgColor}/>
