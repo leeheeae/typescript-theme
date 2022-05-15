@@ -95,3 +95,86 @@ const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
   console.log('hello', value);
 };
 ```
+
+### styled.d.ts 파일 생성으로 Override(덮어쓰기)하여 Theme 설정하기
+
+#### styled.d.ts 설정하기
+
+- styled.d.ts 파일 생성 후 아래의 코드 작성(기존의 styled-components에 확장하는 코드)
+
+```typescript
+import 'styled-components';
+
+declare module 'styled-components' {
+  export interface DefaultTheme {
+    textColor: string;
+    bgColor: string;
+    btnColor: string;
+  }
+}
+```
+
+#### theme 값 설정
+
+- theme.ts 파일 생성
+- styled.d.ts파일에 확장한 DefaultTheme 불러오기
+  - `import { DefaultTheme } from "styled-components";`로 import
+- 테마의 type을 DefaultTheme로 설정하고 값을 작성한 후 export 시키기
+
+```typescript
+import { DefaultTheme } from 'styled-components';
+
+export const lightTheme: DefaultTheme = {
+  bgColor: '#FFF',
+  textColor: '#000',
+  btnColor: 'tomato',
+};
+
+export const darkTheme: DefaultTheme = {
+  bgColor: '#000',
+  textColor: '#fff',
+  btnColor: 'teal',
+};
+```
+
+#### ThemeProvider 설정하기
+
+- styled-components의 ThemeProvider를 불러오기
+- theme.ts에서 설정한 theme값 불러오기 (lightTheme, darkTheme)
+- `<ThemeProvider theme={lightTheme}>`형식으로 설정 가능
+- ThemeProvider의 theme props의 전달하는 값에 따라 theme를 설정할 수 있음
+
+```typescript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { ThemeProvider } from 'styled-components';
+import { lightTheme, darkTheme } from './theme';
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+root.render(
+  <React.StrictMode>
+    <ThemeProvider theme={lightTheme}>
+      <App />
+    </ThemeProvider>
+  </React.StrictMode>
+);
+```
+
+#### 설정한 테마 접근하기
+
+- props.theme를 이용하여 styled-components에서 접근
+- 설정해놓은 값을 확인할 수 있어 실수 방지 가능
+
+```typescript
+import styled from 'styled-components';
+
+const Container = styled.div`
+  background-color: ${(props) => props.theme.bgColor};
+`;
+const H1 = styled.h1`
+  color: ${(props) => props.theme.textColor};
+`;
+```
